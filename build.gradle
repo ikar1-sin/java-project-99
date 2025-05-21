@@ -23,7 +23,7 @@ configurations {
 }
 
 application {
-	mainClass.set("hexlet.code.AppAplication")
+	mainClass.set("hexlet.code.AppApplication")
 }
 
 repositories {
