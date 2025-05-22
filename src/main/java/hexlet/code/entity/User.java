@@ -39,7 +39,7 @@ public class User {
     @LastModifiedDate
     private LocalDate updatedAt;
 
-    protected User() {}
+    protected User() {  }
 
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
