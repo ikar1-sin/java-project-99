@@ -1,5 +1,6 @@
 package hexlet.code.config;
 
+import hexlet.code.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,12 +34,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector)
             throws Exception {
-        // По умолчанию все запрещено
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Разрешаем доступ только к /api/login, чтобы аутентифицироваться и получить токен
                         .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder)))
@@ -54,9 +55,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider daoAuthProvider(AuthenticationManagerBuilder auth) {
+    public AuthenticationProvider daoAuthProvider(PasswordEncoder passwordEncoder,
+                                                  UserService userService) {
         var provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(userService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }

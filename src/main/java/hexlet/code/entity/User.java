@@ -49,7 +49,7 @@ public class User implements UserDetails, BaseEntity {
     @LastModifiedDate
     private LocalDate updatedAt;
 
-    protected User() {  }
+    public User() {  }
 
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
