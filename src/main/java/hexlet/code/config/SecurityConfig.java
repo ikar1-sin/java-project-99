@@ -40,6 +40,10 @@ public class SecurityConfig {
                         // Разрешаем доступ только к /api/login, чтобы аутентифицироваться и получить токен
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/welcome").permitAll()
+                        .requestMatchers("/test").permitAll()
+                        .requestMatchers("/index.html").permitAll()
+                        .requestMatchers("/assets/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder)))
