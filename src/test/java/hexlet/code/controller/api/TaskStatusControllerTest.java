@@ -51,6 +51,7 @@ public class TaskStatusControllerTest {
 
     @BeforeEach
     public void beforeEach() {
+        statusRepository.deleteAll();
         var user = Instancio.of(User.class)
                 .ignore(Select.field(User::getId))
                 .supply(Select.field(User::getFirstName), () -> faker.name().firstName())

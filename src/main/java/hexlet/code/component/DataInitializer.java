@@ -2,14 +2,10 @@ package hexlet.code.component;
 
 import hexlet.code.entity.TaskStatus;
 import hexlet.code.entity.User;
-import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.service.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
