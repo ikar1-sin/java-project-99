@@ -5,6 +5,7 @@ import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     public List<UserDTO> index() {
         var users = userRepository.findAll();
@@ -59,7 +63,12 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        if (!taskRepository.existsByAssigneeId(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("User has a task, so cannot be deleted");
+        }
+
     }
 
     @Override

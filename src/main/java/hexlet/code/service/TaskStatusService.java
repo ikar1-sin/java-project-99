@@ -5,6 +5,7 @@ import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.dto.TaskStatusUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class TaskStatusService {
 
     @Autowired
     private TaskStatusMapper statusMapper;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     public List<TaskStatusDTO> index() {
         var statuses = statusRepository.findAll();
@@ -50,6 +54,11 @@ public class TaskStatusService {
     }
 
     public void delete(Long id) {
+        if (taskRepository.existsByTaskStatusId(id)) {
+            throw new RuntimeException(
+                    "Task Status is connected with some task, so cannot be deleted"
+            );
+        }
            statusRepository.deleteById(id);
     }
 
