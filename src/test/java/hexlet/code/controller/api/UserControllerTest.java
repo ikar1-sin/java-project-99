@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.entity.User;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.util.EntityGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
-import org.instancio.Select;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,19 +44,16 @@ public class UserControllerTest {
     @Autowired
     private ObjectMapper om;
 
+    @Autowired
+    private EntityGenerator entityGenerator;
+
     private User user;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
     @BeforeEach
     public void createUser() {
-        user = Instancio.of(User.class)
-                .ignore(Select.field(User::getId))
-                .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
-                .supply(Select.field(User::getLastName), () -> faker.name().lastName())
-                .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
-                .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password(3, 10))
-                .create();
+        user = Instancio.of(entityGenerator.getUserModel()).create();
         token = jwt().jwt(builder -> builder.subject(user.getEmail()));
     }
 

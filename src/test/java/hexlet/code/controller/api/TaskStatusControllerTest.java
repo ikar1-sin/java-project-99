@@ -11,11 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.entity.TaskStatus;
-import hexlet.code.entity.User;
 import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.util.EntityGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
-import org.instancio.Select;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +44,9 @@ public class TaskStatusControllerTest {
     @Autowired
     private ObjectMapper om;
 
+    @Autowired
+    private EntityGenerator entityGenerator;
+
     private TaskStatus status;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
@@ -52,21 +54,8 @@ public class TaskStatusControllerTest {
     @BeforeEach
     public void beforeEach() {
         statusRepository.deleteAll();
-        var user = Instancio.of(User.class)
-                .ignore(Select.field(User::getId))
-                .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
-                .supply(Select.field(User::getLastName), () -> faker.name().lastName())
-                .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
-                .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password(3, 10))
-                .create();
-
-        token = jwt().jwt(builder -> builder.subject(user.getEmail()));
-
-        status = Instancio.of(TaskStatus.class)
-                .ignore(Select.field(TaskStatus::getId))
-                .supply(Select.field(TaskStatus::getName), () -> "Draft")
-                .supply(Select.field(TaskStatus::getSlug), () -> "draft")
-                .create();
+        status = Instancio.of(entityGenerator.getTaskStatusModel()).create();
+        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
     }
 
     @AfterEach

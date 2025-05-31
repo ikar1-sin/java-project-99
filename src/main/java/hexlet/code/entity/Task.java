@@ -4,9 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,8 +32,10 @@ public class Task {
     private String name;
     private int index;
     private String description;
-    @ManyToOne
-    @NotBlank
+
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    @NotNull
     private TaskStatus taskStatus;
     @ManyToOne
     private User assignee;
