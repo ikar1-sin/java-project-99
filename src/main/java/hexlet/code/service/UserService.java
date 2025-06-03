@@ -46,7 +46,7 @@ public class UserService implements UserDetailsService {
 
     public UserDTO create(UserCreateDTO dto) {
         var user = userMapper.map(dto);
-        user.setPasswordDigest(passwordEncoder.encode(dto.getPasswordDigest()));
+        user.setPasswordDigest(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
         return userMapper.map(user);
     }
@@ -55,8 +55,8 @@ public class UserService implements UserDetailsService {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
         userMapper.update(user, dto);
-        if (dto.getPasswordDigest() != null && dto.getPasswordDigest().isPresent()) {
-            user.setPasswordDigest(passwordEncoder.encode(dto.getPasswordDigest().get()));
+        if (dto.getPassword() != null && dto.getPassword().isPresent()) {
+            user.setPasswordDigest(passwordEncoder.encode(dto.getPassword().get()));
         }
         userRepository.save(user);
         return userMapper.map(user);

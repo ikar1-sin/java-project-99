@@ -5,6 +5,7 @@ import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.entity.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -17,9 +18,10 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public abstract class UserMapper {
-
+    @Mapping(source = "password", target = "passwordDigest")
     public abstract User map(UserCreateDTO dto);
     public abstract UserDTO map(User user);
+    @Mapping(source = "password", target = "passwordDigest")
     public abstract void update(@MappingTarget User user, UserUpdateDTO dto);
 
 }

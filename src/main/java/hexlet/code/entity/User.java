@@ -8,7 +8,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +26,7 @@ import java.util.Collection;
 @Setter
 public class User implements UserDetails, BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
@@ -38,8 +37,7 @@ public class User implements UserDetails, BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @Column(name = "password")
-    @NotNull
+    @NotBlank
     @Size(min = 3)
     private String passwordDigest;
 

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -15,25 +16,21 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "labels")
+@EnableJpaAuditing
 @Getter
 @Setter
-@EnableJpaAuditing
-public class TaskStatus {
-
+public class Label {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    @Size(min = 1)
     @NotBlank
+    @Column(unique = true)
+    @Size(min = 3, max = 1000)
     private String name;
-
-    @Column(unique = true)
-    @Size(min = 1)
-    @NotBlank
-    private String slug;
 
     @CreatedDate
     private LocalDate createdAt;
+
 }

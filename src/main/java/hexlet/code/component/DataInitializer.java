@@ -1,44 +1,50 @@
 package hexlet.code.component;
 
-import hexlet.code.entity.TaskStatus;
-import hexlet.code.entity.User;
-import hexlet.code.repository.TaskStatusRepository;
-import hexlet.code.repository.UserRepository;
-import jakarta.annotation.PostConstruct;
+import hexlet.code.dto.LabelCreateDTO;
+import hexlet.code.dto.TaskStatusCreateDTO;
+import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.service.LabelService;
+import hexlet.code.service.TaskStatusService;
+import hexlet.code.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class DataInitializer {
+public class DataInitializer implements ApplicationRunner {
 
-    private UserRepository userRepository;
-    private TaskStatusRepository statusRepository;
-    private PasswordEncoder passwordEncoder;
+    private UserService userService;
+    private TaskStatusService statusService;
+    private LabelService labelService;
 
-    @PostConstruct
-    public void initializeUser() {
-        if (userRepository.findByEmail("hexlet@example.com").isEmpty()) {
-            var email = "hexlet@example.com";
-            var user = new User();
-            user.setEmail(email);
-            user.setPasswordDigest(passwordEncoder.encode("qwerty"));
-            userRepository.save(user);
-        }
+    @Override
+    public void run(ApplicationArguments args) {
+        var admin = new UserCreateDTO();
+
+        admin.setEmail("hexlet@example.com");
+        admin.setFirstName("Admin");
+        admin.setLastName("Admin");
+        admin.setPassword("qwerty");
+        userService.create(admin);
+
+        List<TaskStatusCreateDTO> taskStatuses = Arrays.asList(
+                new TaskStatusCreateDTO("Draft", "draft"),
+                new TaskStatusCreateDTO("ToReview", "to_review"),
+                new TaskStatusCreateDTO("ToBeFixed", "to_be_fixed"),
+                new TaskStatusCreateDTO("ToPublish", "to_publish"),
+                new TaskStatusCreateDTO("Published", "published")
+        );
+        taskStatuses.forEach(statusService::create);
+
+        List<LabelCreateDTO> labels = List.of(
+                new LabelCreateDTO("feature"),
+                new LabelCreateDTO("bug")
+        );
+        labels.forEach(labelService::create);
     }
-
-    @PostConstruct
-    public void initializeTaskStatuses() {
-        List<String> slugs = List.of("draft", "to_review", "to_be_fixed", "to_publish", "published");
-        for (var slug: slugs) {
-            var status = new TaskStatus();
-            status.setSlug(slug);
-            status.setName(slug.replaceAll("_", " "));
-            statusRepository.save(status);
-        }
-    }
-
 }

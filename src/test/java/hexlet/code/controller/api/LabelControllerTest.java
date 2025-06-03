@@ -10,8 +10,8 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.entity.User;
-import hexlet.code.repository.UserRepository;
+import hexlet.code.entity.Label;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.EntityGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
@@ -29,13 +29,13 @@ import java.util.Map;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTest {
+public class LabelControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
+    private LabelRepository labelRepository;
 
     @Autowired
     private ObjectMapper om;
@@ -43,72 +43,68 @@ public class UserControllerTest {
     @Autowired
     private EntityGenerator entityGenerator;
 
-    private User user;
+    private Label label;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
     @BeforeEach
-    public void createUser() {
-        user = Instancio.of(entityGenerator.getUserModel()).create();
-        token = jwt().jwt(builder -> builder.subject(user.getEmail()));
+    public void set() {
+        labelRepository.deleteAll();
+        label = Instancio.of(entityGenerator.getLabelModel()).create();
+        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
     }
 
     @AfterEach
     public void clear() {
-        userRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     @Test
-    public void testIndex() throws Exception {
-        var result = mockMvc.perform(get("/api/users").with(token))
+    public void indexLabelTest() throws Exception {
+        var result = mockMvc.perform(get("/api/labels")
+                .with(token))
                 .andExpect(status().isOk())
                 .andReturn();
-
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isArray();
     }
 
     @Test
-    public void testShow() throws Exception {
-        userRepository.save(user);
-
-        var request = mockMvc.perform(get("/api/users/{id}", user.getId()).with(token))
+    public void showLabelTest() throws Exception {
+        labelRepository.save(label);
+        var result = mockMvc.perform(get("/api/labels/{id}", label.getId())
+                .with(token))
                 .andExpect(status().isOk())
                 .andReturn();
-
-        var body = request.getResponse().getContentAsString();
-
+        var body = result.getResponse().getContentAsString();
         assertThatJson(body).and(
-                v -> v.node("email").isEqualTo(user.getEmail()),
-                v -> v.node("firstName").isEqualTo(user.getFirstName())
+                l -> l.node("name").isEqualTo(label.getName())
         );
     }
 
     @Test
-    public void testCreateUser() throws Exception {
-        var request = post("/api/users")
+    public void createLabelTest() throws Exception {
+        var request = post("/api/labels")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(user));
-
+                .content(om.writeValueAsString(label));
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var data = userRepository.findByEmail(user.getEmail()).orElse(null);
+        var data = labelRepository.findByName(label.getName()).orElse(null);
 
         assertThat(data).isNotNull();
-        assertThat(data.getEmail()).isEqualTo(user.getEmail());
-        assertThat(data.getFirstName()).isEqualTo(user.getFirstName());
+        assertThat(data.getName()).isEqualTo(label.getName());
     }
 
     @Test
-    public void testUpdateUser() throws Exception {
-        userRepository.save(user);
+    public void updateLabelTest() throws Exception {
+        labelRepository.save(label);
 
         Map<String, String> data = new HashMap<>();
-        data.put("firstName", "javaSpring");
+        data.put("name", "bug");
 
-        var request = put("/api/users/{id}", user.getId())
+        var request = put("/api/labels/{id}", label.getId())
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
@@ -116,24 +112,20 @@ public class UserControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var body = userRepository.findById(user.getId()).orElse(null);
+        var body = labelRepository.findById(label.getId()).orElse(null);
 
         assertThat(body).isNotNull();
-        assertThat(body.getFirstName()).isEqualTo("javaSpring");
+        assertThat(body.getName()).isEqualTo("bug");
     }
 
     @Test
-    public void testDelete() throws Exception {
-        userRepository.save(user);
+    public void deleteLabelTest() throws Exception {
+        labelRepository.save(label);
 
-        var request = delete("/api/users/{id}", user.getId())
-                .with(token);
-
-        mockMvc.perform(request)
-                        .andExpect(status().isNoContent());
-
-        var data = userRepository.findById(user.getId()).orElse(null);
-
-        assertThat(data).isNull();
+        mockMvc.perform(delete("/api/labels/{id}", label.getId())
+                .with(token));
+        var body = labelRepository.findById(label.getId()).orElse(null);
+        assertThat(body).isNull();
     }
+
 }

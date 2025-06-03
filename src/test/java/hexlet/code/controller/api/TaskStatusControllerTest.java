@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.entity.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.EntityGenerator;
-import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +36,6 @@ public class TaskStatusControllerTest {
 
     @Autowired
     private TaskStatusRepository statusRepository;
-
-    @Autowired
-    private Faker faker;
 
     @Autowired
     private ObjectMapper om;
@@ -100,7 +96,7 @@ public class TaskStatusControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var body = statusRepository.findBySlug(status.getSlug());
+        var body = statusRepository.findBySlug(status.getSlug()).orElse(null);
 
         assertThat(body).isNotNull();
         assertThat(body.getName()).isEqualTo(status.getName());
@@ -122,8 +118,9 @@ public class TaskStatusControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var body = statusRepository.findById(status.getId()).get();
+        var body = statusRepository.findById(status.getId()).orElse(null);
 
+        assertThat(body).isNotNull();
         assertThat(body.getName()).isEqualTo("megaDraft");
     }
 

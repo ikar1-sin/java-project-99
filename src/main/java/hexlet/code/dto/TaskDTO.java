@@ -1,19 +1,22 @@
 package hexlet.code.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hexlet.code.entity.TaskStatus;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import org.openapitools.jackson.nullable.JsonNullable;
+
+import java.util.Set;
 
 @Getter
 @Setter
 public class TaskDTO {
     private Long id;
-    private int index;
-    private String name;
-    private String description;
-    private TaskStatus status;
+    private Integer index;
+    @NotBlank
+    private String title;
+    private String content;
+    private String status;
     @JsonProperty(namespace = "assignee_id")
-    private JsonNullable<Long> assigneeId;
+    private Long assigneeId;
+    private Set<Long> labelIds;
 }

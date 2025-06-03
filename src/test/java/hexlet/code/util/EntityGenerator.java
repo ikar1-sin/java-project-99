@@ -1,5 +1,6 @@
 package hexlet.code.util;
 
+import hexlet.code.entity.Label;
 import hexlet.code.entity.Task;
 import hexlet.code.entity.TaskStatus;
 import jakarta.annotation.PostConstruct;
@@ -19,12 +20,13 @@ public class EntityGenerator {
     private Model<User> userModel;
     private Model<Task> taskModel;
     private Model<TaskStatus> taskStatusModel;
+    private Model<Label> labelModel;
 
     @Autowired
     private Faker faker;
 
     @PostConstruct
-    public void run() {
+    private void run() {
         userModel = Instancio.of(User.class)
                 .ignore(Select.field(User::getId))
                 .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
@@ -41,9 +43,16 @@ public class EntityGenerator {
 
         taskModel = Instancio.of(Task.class)
                 .ignore(Select.field(Task::getId))
-                .supply(Select.field(Task::getIndex), () -> faker.number().numberBetween(1, 100))
-                .supply(Select.field(Task::getName), () -> faker.lorem().word())
-                .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence(5))
+                .ignore(Select.field(Task::getIndex))
+                .supply(Select.field(Task::getName), () -> faker.name().title())
+                .supply(Select.field(Task::getDescription), () -> faker.text().text())
+                .ignore(Select.field(Task::getTaskStatus))
+                .ignore(Select.field(Task::getLabels))
+                .toModel();
+
+        labelModel = Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .supply(Select.field(Label::getName), () -> faker.lorem().sentence(2))
                 .toModel();
     }
 
