@@ -1,8 +1,8 @@
 package hexlet.code.component;
 
-import hexlet.code.dto.LabelCreateDTO;
-import hexlet.code.dto.TaskStatusCreateDTO;
-import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.dto.label.LabelCreateDTO;
+import hexlet.code.dto.task_status.TaskStatusCreateDTO;
+import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.service.LabelService;
 import hexlet.code.service.TaskStatusService;
 import hexlet.code.service.UserService;

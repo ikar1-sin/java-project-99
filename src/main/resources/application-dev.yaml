@@ -4,6 +4,8 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: password
+    hikari:
+      maximum-pool-size: 20
 
   h2:
     console:
