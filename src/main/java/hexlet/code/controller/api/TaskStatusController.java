@@ -5,7 +5,6 @@ import hexlet.code.dto.task_status.TaskStatusDTO;
 import hexlet.code.dto.task_status.TaskStatusUpdateDTO;
 import hexlet.code.service.TaskStatusService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,8 +23,11 @@ import java.util.List;
 @RequestMapping("/api/task_statuses")
 public class TaskStatusController {
 
-    @Autowired
-    private TaskStatusService statusService;
+    private final TaskStatusService statusService;
+
+    public TaskStatusController(TaskStatusService statusService) {
+        this.statusService = statusService;
+    }
 
     @GetMapping
     public ResponseEntity<List<TaskStatusDTO>> index() {

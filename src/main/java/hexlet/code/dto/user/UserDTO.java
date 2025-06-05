@@ -1,11 +1,10 @@
 package hexlet.code.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -16,6 +15,6 @@ public class UserDTO {
     @Email
     @NotBlank
     private String email;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private String createdAt;
 }

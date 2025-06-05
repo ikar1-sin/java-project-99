@@ -7,7 +7,6 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,14 +14,18 @@ import java.util.List;
 @Service
 public class TaskStatusService {
 
-    @Autowired
-    private TaskStatusRepository statusRepository;
+    private final TaskStatusRepository statusRepository;
 
-    @Autowired
-    private TaskStatusMapper statusMapper;
+    private final TaskStatusMapper statusMapper;
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+
+    public TaskStatusService(
+            TaskStatusRepository statusRepository, TaskStatusMapper statusMapper, TaskRepository taskRepository) {
+        this.statusRepository = statusRepository;
+        this.statusMapper = statusMapper;
+        this.taskRepository = taskRepository;
+    }
 
     public List<TaskStatusDTO> index() {
         var statuses = statusRepository.findAll();
