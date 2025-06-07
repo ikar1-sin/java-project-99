@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
     public List<UserDTO> index() {
         var users = userRepository.findAll();
         return users.stream()
-                .map(u -> userMapper.map(u))
+                .map(userMapper::map)
                 .toList();
     }
 
@@ -66,12 +66,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(Long id) {
-        if (!taskRepository.existsByAssigneeId(id)) {
             userRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("User has a task, so cannot be deleted");
-        }
-
     }
 
     @Override

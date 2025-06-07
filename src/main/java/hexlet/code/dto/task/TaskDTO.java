@@ -19,7 +19,7 @@ public class TaskDTO {
     private String status;
     @JsonProperty(namespace = "assignee_id")
     private Long assigneeId;
-    private Set<Long> labelIds;
+    private Set<Long> taskLabelIds;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private String createdAt;
 }

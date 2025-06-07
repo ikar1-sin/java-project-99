@@ -4,9 +4,11 @@ import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
 import hexlet.code.service.UserService;
+import hexlet.code.util.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +26,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserUtils userUtils;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserUtils userUtils) {
         this.userService = userService;
+        this.userUtils = userUtils;
     }
 
     @GetMapping
@@ -55,9 +59,10 @@ public class UserController {
         return userService.update(id, dto);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    @PreAuthorize("@userUtils.isUser(#id)")
+    public void delete(@PathVariable Long id) throws Exception {
         userService.delete(id);
     }
 

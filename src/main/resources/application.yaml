@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: app
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+
+sentry:
+  dsn: https://f1da447605c8e4c0e561d201da8bcd2c@o4509439960154112.ingest.de.sentry.io/4509440004456528
+  send-default-pii: true
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem
