@@ -253,7 +253,6 @@ public class TaskControllerTest {
         dto.setIndex(task.getIndex());
         dto.setAssigneeId(user.getId());
         dto.setStatus(taskStatus.getSlug());
-        dto.setLabelIds(label.getId());
         var request = post("/api/tasks")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
