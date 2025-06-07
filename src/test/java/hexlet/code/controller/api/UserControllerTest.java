@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.entity.User;
+import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.EntityGenerator;
 import org.instancio.Instancio;
@@ -43,6 +44,9 @@ public class UserControllerTest {
     @Autowired
     private EntityGenerator entityGenerator;
 
+    @Autowired
+    private UserMapper userMapper;
+
     private User user;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
@@ -65,7 +69,12 @@ public class UserControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+        var data = userRepository.findAll().stream()
+                .map(userMapper::map)
+                .toList();
+
         assertThatJson(body).isArray();
+        assertThatJson(body).isEqualTo(data);
     }
 
     @Test

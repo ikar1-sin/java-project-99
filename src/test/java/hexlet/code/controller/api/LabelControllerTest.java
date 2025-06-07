@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.entity.Label;
+import hexlet.code.mapper.LabelMapper;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.EntityGenerator;
 import org.instancio.Instancio;
@@ -43,6 +44,9 @@ public class LabelControllerTest {
     @Autowired
     private EntityGenerator entityGenerator;
 
+    @Autowired
+    private LabelMapper labelMapper;
+
     private Label label;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
@@ -65,8 +69,14 @@ public class LabelControllerTest {
                 .with(token))
                 .andExpect(status().isOk())
                 .andReturn();
+
         var body = result.getResponse().getContentAsString();
+        var data = labelRepository.findAll().stream()
+                        .map(labelMapper::map)
+                                .toList();
+
         assertThatJson(body).isArray();
+        assertThatJson(body).isEqualTo(data);
     }
 
     @Test

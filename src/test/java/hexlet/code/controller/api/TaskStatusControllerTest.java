@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.entity.TaskStatus;
+import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.EntityGenerator;
 import org.instancio.Instancio;
@@ -43,6 +44,9 @@ public class TaskStatusControllerTest {
     @Autowired
     private EntityGenerator entityGenerator;
 
+    @Autowired
+    private TaskStatusMapper taskStatusMapper;
+
     private TaskStatus status;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
@@ -68,7 +72,12 @@ public class TaskStatusControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+        var data = statusRepository.findAll().stream()
+                        .map(taskStatusMapper::map)
+                                .toList();
+
         assertThatJson(body).isArray();
+        assertThatJson(body).isEqualTo(data);
     }
 
     @Test

@@ -6,6 +6,7 @@ import hexlet.code.entity.Label;
 import hexlet.code.entity.Task;
 import hexlet.code.entity.TaskStatus;
 import hexlet.code.entity.User;
+import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
@@ -70,6 +71,8 @@ public class TaskControllerTest {
     private Label label;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
+    @Autowired
+    private TaskMapper taskMapper;
 
     @BeforeEach
     public void set() {
@@ -110,7 +113,12 @@ public class TaskControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
+        var data = taskRepository.findAll().stream()
+                        .map(taskMapper::map)
+                                .toList();
+
         assertThatJson(body).isArray();
+        assertThatJson(body).isEqualTo(data);
     }
 
     @Test
