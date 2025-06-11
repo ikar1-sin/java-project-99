@@ -26,11 +26,9 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserUtils userUtils;
 
     public UserController(UserService userService, UserUtils userUtils) {
         this.userService = userService;
-        this.userUtils = userUtils;
     }
 
     @GetMapping
@@ -61,7 +59,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("@userUtils.isUser(#id)")
+    @PreAuthorize("@userUtils.isCurrentUserDeletedUser(#id)")
     public void delete(@PathVariable Long id) throws Exception {
         userService.delete(id);
     }

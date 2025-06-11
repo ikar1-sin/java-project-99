@@ -3,6 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
+import hexlet.code.exception.ResourceDeletionException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.TaskRepository;
@@ -66,6 +67,9 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(Long id) {
+        if (!taskRepository.existsByAssigneeId(id)) {
+            throw new ResourceDeletionException("User cannot be deleted, as he has the task");
+        }
             userRepository.deleteById(id);
     }
 

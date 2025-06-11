@@ -3,6 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.task_status.TaskStatusCreateDTO;
 import hexlet.code.dto.task_status.TaskStatusDTO;
 import hexlet.code.dto.task_status.TaskStatusUpdateDTO;
+import hexlet.code.exception.ResourceDeletionException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskRepository;
@@ -58,9 +59,7 @@ public class TaskStatusService {
 
     public void delete(Long id) {
         if (taskRepository.existsByTaskStatusId(id)) {
-            throw new RuntimeException(
-                    "Task Status is connected with some task, so cannot be deleted"
-            );
+            throw new ResourceDeletionException("Task Status is connected with some task, so cannot be deleted");
         }
            statusRepository.deleteById(id);
     }

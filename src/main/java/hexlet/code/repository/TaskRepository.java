@@ -1,5 +1,6 @@
 package hexlet.code.repository;
 
+import hexlet.code.entity.Label;
 import hexlet.code.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -12,4 +13,5 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
     Optional<Task> findByName(String title);
     boolean existsByAssigneeId(Long id);
     boolean existsByTaskStatusId(Long id);
+    boolean existsByLabelsContaining(Label label);
 }

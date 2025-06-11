@@ -3,9 +3,11 @@ package hexlet.code.service;
 import hexlet.code.dto.label.LabelCreateDTO;
 import hexlet.code.dto.label.LabelDTO;
 import hexlet.code.dto.label.LabelUpdateDTO;
+import hexlet.code.exception.ResourceDeletionException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.repository.LabelRepository;
+import hexlet.code.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +17,14 @@ public class LabelService {
 
     private final LabelRepository labelRepository;
 
+    private final TaskRepository taskRepository;
+
     private final LabelMapper labelMapper;
 
-    public LabelService(LabelRepository labelRepository, LabelMapper labelMapper) {
+    public LabelService(LabelRepository labelRepository, LabelMapper labelMapper, TaskRepository taskRepository) {
         this.labelRepository = labelRepository;
         this.labelMapper = labelMapper;
+        this.taskRepository = taskRepository;
     }
 
     public List<LabelDTO> index() {
@@ -55,7 +60,12 @@ public class LabelService {
     }
 
     public void delete(Long id) {
-        labelRepository.deleteById(id);
+        var label = labelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
+        if (taskRepository.existsByLabelsContaining(label)) {
+            throw new ResourceDeletionException("Label cannot be deleted, as it connected with the task");
+        }
+        labelRepository.delete(label);
     }
 
 }

@@ -13,9 +13,12 @@ public class UserUtils {
         this.userRepository = userRepository;
     }
 
-    public boolean isUser(Long id) {
+    public boolean isCurrentUserDeletedUser(Long id) {
         var userEmail = userRepository.findById(id).orElseThrow().getEmail();
         var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return false;
+        }
         return userEmail.equals(auth.getName());
     }
 
