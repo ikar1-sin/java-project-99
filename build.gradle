@@ -17,6 +17,10 @@ java {
 	}
 }
 
+jacoco {
+	toolVersion="0.8.11"
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -70,9 +74,17 @@ sonar {
 	}
 }
 
+test {
+	finalizedBy jacocoTestReport
+	jacoco {
+		enabled=true
+	}
+}
+
 jacocoTestReport {
+	dependsOn test
 	reports {
-		xml.required = true
+		xml.required=true
 	}
 }
 
