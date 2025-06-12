@@ -37,8 +37,8 @@ public class EntityGenerator {
 
         taskStatusModel = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
-                .supply(Select.field(TaskStatus::getName), () -> "Draft")
-                .supply(Select.field(TaskStatus::getSlug), () -> "draft")
+                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().word())
                 .toModel();
 
         taskModel = Instancio.of(Task.class)

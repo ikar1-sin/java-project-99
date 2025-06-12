@@ -12,6 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.entity.User;
 import hexlet.code.mapper.UserMapper;
+import hexlet.code.repository.LabelRepository;
+import hexlet.code.repository.TaskRepository;
+import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.EntityGenerator;
 import org.instancio.Instancio;
@@ -27,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -47,6 +51,15 @@ public class UserControllerTest {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
+
     private User user;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
@@ -59,6 +72,9 @@ public class UserControllerTest {
 
     @AfterEach
     public void clear() {
+        taskRepository.deleteAll();
+        labelRepository.deleteAll();
+        taskStatusRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -132,17 +148,53 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testDelete() throws Exception {
+    public void testDeleteUser() throws Exception {
         userRepository.save(user);
-
         var request = delete("/api/users/{id}", user.getId())
                 .with(token);
 
         mockMvc.perform(request)
-                        .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
 
         var data = userRepository.findById(user.getId()).orElse(null);
-
         assertThat(data).isNull();
+    }
+
+    @Test
+    public void testDeleteNotCurrentUser() throws Exception {
+        userRepository.save(user);
+        var oldUserId = user.getId();
+
+        user = Instancio.of(entityGenerator.getUserModel()).create();
+        userRepository.save(user);
+        token = jwt().jwt(builder -> builder.subject(user.getEmail()));
+
+        var request = delete("/api/users/" + oldUserId)
+                .with(token);
+
+        mockMvc.perform(request)
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testDeleteUserWithTask() throws Exception {
+        userRepository.save(user);
+        var task = Instancio.of(entityGenerator.getTaskModel()).create();
+        var taskStatus = Instancio.of(entityGenerator.getTaskStatusModel()).create();
+        taskStatusRepository.save(taskStatus);
+        var label = Instancio.of(entityGenerator.getLabelModel()).create();
+        labelRepository.save(label);
+        var labels = Set.of(label);
+        task.setAssignee(user);
+        task.setTaskStatus(taskStatus);
+        task.setLabels(labels);
+        taskRepository.save(task);
+
+        var request = delete("/api/users/" + user.getId())
+                .with(token);
+
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest());
+
     }
 }
