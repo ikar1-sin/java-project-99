@@ -10,6 +10,8 @@ report:
 	./gradlew jacocoTestReport
 lint:
 	./gradlew checkstyleMain
+run:
+	./gradlew bootRun
 
 .PHONY: build
 

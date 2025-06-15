@@ -58,9 +58,6 @@ public class TaskStatusService {
     }
 
     public void delete(Long id) {
-        if (taskRepository.existsByTaskStatusId(id)) {
-            throw new ResourceDeletionException("Task Status is connected with some task, so cannot be deleted");
-        }
            statusRepository.deleteById(id);
     }
 

@@ -67,9 +67,6 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(Long id) {
-        if (taskRepository.existsByAssigneeId(id)) {
-            throw new ResourceDeletionException("User cannot be deleted, as he has the task");
-        }
             userRepository.deleteById(id);
     }
 

@@ -60,12 +60,7 @@ public class LabelService {
     }
 
     public void delete(Long id) {
-        var label = labelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
-        if (taskRepository.existsByLabelsContaining(label)) {
-            throw new ResourceDeletionException("Label cannot be deleted, as it connected with the task");
-        }
-        labelRepository.delete(label);
+        labelRepository.deleteById(id);
     }
 
 }
