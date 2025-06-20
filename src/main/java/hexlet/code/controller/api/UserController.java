@@ -3,6 +3,7 @@ package hexlet.code.controller.api;
 import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
+import hexlet.code.exception.ResourceDeletionException;
 import hexlet.code.service.UserService;
 import hexlet.code.util.UserUtils;
 import jakarta.validation.Valid;
@@ -60,7 +61,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@userUtils.isCurrentUserDeleted(#id)")
-    public void delete(@PathVariable Long id) throws Exception {
+    public void delete(@PathVariable Long id) throws ResourceDeletionException {
         userService.delete(id);
     }
 

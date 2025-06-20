@@ -3,10 +3,8 @@ package hexlet.code.service;
 import hexlet.code.dto.task_status.TaskStatusCreateDTO;
 import hexlet.code.dto.task_status.TaskStatusDTO;
 import hexlet.code.dto.task_status.TaskStatusUpdateDTO;
-import hexlet.code.exception.ResourceDeletionException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
-import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +17,10 @@ public class TaskStatusService {
 
     private final TaskStatusMapper statusMapper;
 
-    private final TaskRepository taskRepository;
-
     public TaskStatusService(
-            TaskStatusRepository statusRepository, TaskStatusMapper statusMapper, TaskRepository taskRepository) {
+            TaskStatusRepository statusRepository, TaskStatusMapper statusMapper) {
         this.statusRepository = statusRepository;
         this.statusMapper = statusMapper;
-        this.taskRepository = taskRepository;
     }
 
     public List<TaskStatusDTO> index() {

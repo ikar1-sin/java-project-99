@@ -194,7 +194,7 @@ public class UserControllerTest {
                 .with(token);
 
         mockMvc.perform(request)
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
 
     }
 }
